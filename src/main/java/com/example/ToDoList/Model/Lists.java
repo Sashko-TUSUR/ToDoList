@@ -30,6 +30,8 @@ public class Lists {
     private Long id;
     private String ListName;
 
+    private Long userId;
+
     @OneToMany(mappedBy = "lists")
     private List<Tasks> tasks;
 

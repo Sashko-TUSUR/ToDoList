@@ -17,7 +17,6 @@ public class Colors {
 
     @Id
     private String value;
-
     private String color;
     private String label;
 
