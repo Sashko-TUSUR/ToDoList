@@ -1,6 +1,7 @@
 package com.example.ToDoList.Model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,8 +17,10 @@ import javax.persistence.Id;
 public class Colors {
 
     @Id
-    private String value;
     private String color;
+    @JsonIgnore
+    private String value;
+    @JsonIgnore
     private String label;
 
 }

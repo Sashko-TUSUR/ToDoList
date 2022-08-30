@@ -104,9 +104,6 @@ public class JwtUtils {
         return false;
     }
 
-
-
-
     /////////////////////АКСЕСС ТОКЕН ///////////////////// ///////////////////// ///////////////////// ///////////////////// /////////////////////
     public String generateJwtToken(UserDetailsImpl userPrincipal) {
         return generateJwtTokenFromEmail(userPrincipal.getEmail());
@@ -144,8 +141,6 @@ public class JwtUtils {
     public String generateJwtTokenSignUp(String email) {
         return generateJwtTokenFromEmail(email);
     }
-
-
 
 
     /////////////////////ССАНЫЕ КУКИ ///////////////////// ///////////////////// ///////////////////// ///////////////////// /////////////////////

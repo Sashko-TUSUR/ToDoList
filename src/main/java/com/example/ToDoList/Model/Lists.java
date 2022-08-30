@@ -2,11 +2,14 @@ package com.example.ToDoList.Model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SelectBeforeUpdate;
 
 import javax.persistence.*;
 
@@ -20,9 +23,8 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 @JsonPropertyOrder({"id", "listName", "colors", "tasks"})
-
+@DynamicUpdate
 
 public class Lists {
     @Id
@@ -32,7 +34,8 @@ public class Lists {
 
     private Long userId;
 
-    @OneToMany(mappedBy = "lists")
+
+    @OneToMany(mappedBy = "lists", cascade = CascadeType.ALL)
     private List<Tasks> tasks;
 
 

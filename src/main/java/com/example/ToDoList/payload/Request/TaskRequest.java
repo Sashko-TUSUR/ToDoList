@@ -12,9 +12,12 @@ import java.util.Date;
 @NoArgsConstructor
 public class TaskRequest {
 
-    private String task;
-    private Date end;
+    private Long id;
+    private String taskName;
+   // private Long endTime;
+    private Date endTime;
     private boolean status;
+    private String description;
 
 }
 

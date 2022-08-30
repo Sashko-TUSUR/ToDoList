@@ -59,7 +59,7 @@ public class AuthController {
     JwtUtils jwtUtils;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -71,8 +71,8 @@ public class AuthController {
                 .collect(Collectors.toList());
         RefreshToken refreshToken = jwtUtils.saveRefreshToken(userDetails.getEmail());
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(refreshToken);
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, String.valueOf(jwtCookie)).
-                body(new JwtResponse(jwt,refreshToken.getToken(),
+        return ResponseEntity.ok()
+                .body(new JwtResponse(jwt,refreshToken.getToken(),
                         userRepository.findById(userDetails.getId())));
 
 
@@ -99,11 +99,17 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity createUser(@RequestBody SignUpRequest signUpRequest) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        RefreshToken refreshToken = jwtUtils.saveRefreshToken(userDetails.getEmail());
+        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(refreshToken);
+
         userService.createUser(signUpRequest);
         String jwt = jwtUtils.generateJwtTokenSignUp(signUpRequest.getEmail());
         System.out.print("пользователь создан");
 
-        return ResponseEntity.ok(new JwtResponseSignUp(jwt));
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, String.valueOf(jwtCookie))
+                        .body(ResponseEntity.ok(new JwtResponseSignUp(jwt)));
     }
 
 

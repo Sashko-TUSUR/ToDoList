@@ -44,7 +44,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);
         }
-
+        /*
         try {
             String jwt = parseJwtCookie(request);
             if (jwt != null && jwtUtils.validateJwtCookieToken(jwt)) {
@@ -62,6 +62,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             logger.error("Cannot set user authenticationRefresh: {}", e);
         }
+
+         */
 
 
         filterChain.doFilter(request, response);
