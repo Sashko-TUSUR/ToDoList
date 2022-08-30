@@ -4,15 +4,13 @@ package com.example.ToDoList.Controllers;
 import com.example.ToDoList.Model.Lists;
 import com.example.ToDoList.Repository.ListsRepository;
 import com.example.ToDoList.payload.Request.ListRequest;
+import com.example.ToDoList.payload.Request.PutUserRequest;
 import com.example.ToDoList.payload.Response.ApiResponse;
 import com.example.ToDoList.service.UserDetailsImpl;
 import com.example.ToDoList.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -56,11 +54,12 @@ public class ListsController {
         userService.deleteList(id);
         return ResponseEntity.ok(new ApiResponse(true, "Лист удалён"));
     }
-    //поделиться списком!!!
+    //поделиться списком
     @PutMapping("share/{id}")
-    public ResponseEntity<?> shareList(@PathVariable(value = "id") Long id)
+    public ResponseEntity<?> shareList(@PathVariable(value = "id") Long id , @RequestBody PutUserRequest putUser)
     {
-        return ResponseEntity.ok(new ApiResponse(true, "Лист удалён"));
+        userService.putList(putUser,id);
+        return ResponseEntity.ok(new ApiResponse(true, "Пользователь добавлен"));
     }
 
 }

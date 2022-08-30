@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class TaskRequest {
 
     private Long id;

@@ -2,11 +2,13 @@ package com.example.ToDoList.Model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,8 +38,9 @@ inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id"))
 private Set<Role> roles;
 
 @JsonIgnore
-@OneToMany()
+@ManyToMany(mappedBy = "users")
 private List<Lists> lists;
+
 
 
     public User(String email, String password) {

@@ -4,15 +4,14 @@ package com.example.ToDoList.Controllers;
 import com.example.ToDoList.Model.Tasks;
 import com.example.ToDoList.Repository.TasksRepository;
 import com.example.ToDoList.payload.Request.CommentRequest;
-import com.example.ToDoList.payload.Request.ListRequest;
 import com.example.ToDoList.payload.Request.TaskRequest;
 import com.example.ToDoList.payload.Response.ApiResponse;
 import com.example.ToDoList.service.UserDetailsImpl;
 import com.example.ToDoList.service.UserService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.config.Task;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,10 +67,10 @@ public ResponseEntity<?> TaskAdd(@Valid @RequestBody TaskRequest taskRequest, @P
 
     //вывод всех задач пользователя
     @GetMapping
-    @JsonIgnoreProperties({ "user:id" })
-    public List<Tasks> taskUser( @AuthenticationPrincipal UserDetailsImpl userDetails)
+    @JsonIgnoreProperties({ "" })
+    public List<Tasks> taskUser(@AuthenticationPrincipal UserDetailsImpl userDetails)
     {
-        System.out.print("id user:   "+userDetails.getId());
+
       return tasksRepository.findByAllTask(userDetails.getId());
     }
 

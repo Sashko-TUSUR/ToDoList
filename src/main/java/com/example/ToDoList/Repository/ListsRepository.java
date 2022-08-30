@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ListsRepository extends JpaRepository<Lists,Long> {
 
-    @Query(value = "SELECT * FROM lists JOIN tasks on lists.id = tasks.lists_id where lists.user_id=:id",
+    @Query(value = "SELECT * FROM lists JOIN lists_user on lists.id = lists_user.lists_id INNER JOIN user ON lists_user.user_id = user.id where user.id=:id",
             nativeQuery = true)
     List<Lists> findByAllLists(@Param("id")Long id);
 

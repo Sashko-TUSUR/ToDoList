@@ -5,10 +5,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.SelectBeforeUpdate;
 
 import javax.persistence.*;
@@ -32,14 +35,19 @@ public class Lists {
     private Long id;
     private String ListName;
 
-    private Long userId;
-
-
     @OneToMany(mappedBy = "lists", cascade = CascadeType.ALL)
     private List<Tasks> tasks;
 
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JsonIgnore
+    @JoinTable(name = "lists_user",joinColumns = @JoinColumn(name = "lists_id",referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"))
+    private Set<User> users = new HashSet<>();
+
+
     @ManyToOne
+    @JsonUnwrapped
     @JoinColumn(name = "lists_color")
     private Colors colors;
 

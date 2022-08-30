@@ -4,10 +4,7 @@ import com.example.ToDoList.Enumeration.EnumRole;
 import com.example.ToDoList.Model.*;
 import com.example.ToDoList.Repository.*;
 import com.example.ToDoList.Exception.ResourceNotFoundException;
-import com.example.ToDoList.payload.Request.CommentRequest;
-import com.example.ToDoList.payload.Request.ListRequest;
-import com.example.ToDoList.payload.Request.SignUpRequest;
-import com.example.ToDoList.payload.Request.TaskRequest;
+import com.example.ToDoList.payload.Request.*;
 import com.example.ToDoList.payload.Response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -100,7 +97,8 @@ public class UserService {
         Colors colors = colorRepository.findByColor(listRequest.getColor()).orElseThrow(() -> new ResourceNotFoundException("Цвета c таким id: " + listRequest.getColor() +"не существует"));
         lists.setListName(listRequest.getListName());
         lists.setColors(colors);
-        lists.setUserId(id);
+        User user = userRepository.findById(id).get();
+        lists.setUsers(Collections.singleton(user));
         lists = listsRepository.save(lists);
     }
 
@@ -128,9 +126,13 @@ public class UserService {
     }
 
     ///поделиться списком
-    public void putList()
+    public void putList(PutUserRequest putUser, Long id)
     {
-
+        User user = userRepository.findByEmail(putUser.getEmail()).orElseThrow(()
+                -> new ResourceNotFoundException("Пользователя с таким email: "+putUser.getEmail() + " не существует" ));
+        Lists lists = listsRepository.findById(id).get();
+        lists.getUsers().add(user);
+        listsRepository.save(lists);
     }
 
 

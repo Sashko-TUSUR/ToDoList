@@ -2,6 +2,7 @@ package com.example.ToDoList.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,7 @@ public class Tasks {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "lists_id")
     private Lists lists;
+
 
     @OneToMany(mappedBy = "tasks",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments=new ArrayList<>();
