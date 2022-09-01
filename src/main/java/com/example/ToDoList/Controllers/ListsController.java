@@ -9,6 +9,7 @@ import com.example.ToDoList.payload.Response.ApiResponse;
 import com.example.ToDoList.service.UserDetailsImpl;
 import com.example.ToDoList.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.QueryAnnotation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,10 @@ public class ListsController {
     @GetMapping()
     public List<Lists> listUser(@AuthenticationPrincipal UserDetailsImpl userDetails)
     {
-       return listsRepository.findByAllLists(userDetails.getId());
+        if (listsRepository.findByAllLists(userDetails.getId()) !=null) {
+            return listsRepository.findByAllLists(userDetails.getId());
+        }
+        else return null ;
     }
     /// добавление листа
     @PostMapping("/add")
@@ -48,7 +52,7 @@ public class ListsController {
         return ResponseEntity.ok(new ApiResponse(true, "Лист обновлён"));
     }
     // удаление листа посмотреть как удалять все записи этого листа
-    @DeleteMapping("del/{id}")
+    @DeleteMapping("/del/{id}")
     public ResponseEntity<?> delList(@PathVariable(value = "id") Long id)
     {
         userService.deleteList(id);

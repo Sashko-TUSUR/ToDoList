@@ -41,11 +41,16 @@ public class Lists {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JsonIgnore
-    @JoinTable(name = "lists_user",joinColumns = @JoinColumn(name = "lists_id",referencedColumnName = "id"),
+    @JoinTable(name = "accessedUsers",joinColumns = @JoinColumn(name = "lists_id",referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id"))
     private Set<User> users = new HashSet<>();
 
 
+    /*
+    @OneToMany
+    private List<AccessedUsers> accessedUsers;
+
+     */
     @ManyToOne
     @JsonUnwrapped
     @JoinColumn(name = "lists_color")

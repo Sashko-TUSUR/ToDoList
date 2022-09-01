@@ -2,7 +2,7 @@ package com.example.ToDoList.Security;
 
 import com.example.ToDoList.Exception.TokenRefreshException;
 import com.example.ToDoList.Model.RefreshToken;
-import com.example.ToDoList.Repository.RefreshTokenRepositoty;
+import com.example.ToDoList.Repository.RefreshTokenRepository;
 import com.example.ToDoList.Repository.UserRepository;
 import com.example.ToDoList.service.UserDetailsImpl;
 import io.jsonwebtoken.*;
@@ -40,7 +40,7 @@ public class JwtUtils {
 
 
     @Autowired
-    private RefreshTokenRepositoty refreshTokenRepository;
+    private RefreshTokenRepository refreshTokenRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -150,12 +150,15 @@ public class JwtUtils {
                 .sameSite("None").secure(true).build();
         return cookie;
     }
+
+    public ResponseCookie generateJwtCookieSignUp(RefreshToken refreshToken) {
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, refreshToken.getToken()).path("/api/auth/signup").maxAge(24 * 60 * 60).httpOnly(true)
+                .sameSite("None").secure(true).build();
+        return cookie;
+    }
     public String getJwtFromCookies(HttpServletRequest request) {
 
         Cookie cookie = WebUtils.getCookie(request, jwtCookie);
-        System.out.print("KUKI   = "+cookie.getValue());
-        System.out.print("KUKI   = "+cookie.getName());
-        System.out.print("KUKI   = "+cookie.getDomain());
         if (cookie != null) {
             return cookie.getValue();
         } else {

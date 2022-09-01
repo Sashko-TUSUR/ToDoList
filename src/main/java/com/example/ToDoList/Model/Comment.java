@@ -1,7 +1,6 @@
 package com.example.ToDoList.Model;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
@@ -27,8 +26,8 @@ public class Comment {
     private String content;
 
     @Column(updatable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern ="yyyy-MM-dd HH-mm:ss")
-    private LocalDateTime timestamp;
+    //@JsonFormat(shape = JsonFormat.Shape.STRING,pattern ="yyyy-MM-dd HH-mm:ss")
+    private Long timestamp;
 
     @JsonIgnoreProperties("id")
     @JsonUnwrapped

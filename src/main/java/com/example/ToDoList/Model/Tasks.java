@@ -24,8 +24,7 @@ public class Tasks {
     private Long id;
 
     private String taskName;
-   // private Long end;
-    private Date end;
+    private Long endTime;
     private String description;
 
     @Value("false")
@@ -40,9 +39,9 @@ public class Tasks {
     @OneToMany(mappedBy = "tasks",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments=new ArrayList<>();
 
-    public Tasks(String taskName, Date end, Lists lists) {
+    public Tasks(String taskName, Long endTime, Lists lists) {
         this.taskName = taskName;
-        this.end = end;
+        this.endTime = endTime;
         this.lists = lists;
 
     }

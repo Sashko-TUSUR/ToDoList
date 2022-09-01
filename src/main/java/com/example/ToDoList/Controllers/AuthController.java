@@ -99,17 +99,18 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity createUser(@RequestBody SignUpRequest signUpRequest) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        RefreshToken refreshToken = jwtUtils.saveRefreshToken(userDetails.getEmail());
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(refreshToken);
 
         userService.createUser(signUpRequest);
+     //   RefreshToken refreshToken = jwtUtils.saveRefreshToken(signUpRequest.getEmail());
+    //    ResponseCookie jwtCookie = jwtUtils.generateJwtCookieSignUp(refreshToken);
+
         String jwt = jwtUtils.generateJwtTokenSignUp(signUpRequest.getEmail());
         System.out.print("пользователь создан");
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, String.valueOf(jwtCookie))
-                        .body(ResponseEntity.ok(new JwtResponseSignUp(jwt)));
+        return ResponseEntity.ok().body(new JwtResponseSignUp(jwt));
+        //           .body(new JwtResponseSignUp(jwt));
+        //return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, String.valueOf(jwtCookie))
+             //           .body(new JwtResponseSignUp(jwt));
     }
 
 

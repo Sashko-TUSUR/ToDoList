@@ -1,28 +1,19 @@
 package com.example.ToDoList.service;
 
 import com.example.ToDoList.Enumeration.EnumRole;
+import com.example.ToDoList.Exception.ResourceNotFoundException;
 import com.example.ToDoList.Model.*;
 import com.example.ToDoList.Repository.*;
-import com.example.ToDoList.Exception.ResourceNotFoundException;
 import com.example.ToDoList.payload.Request.*;
-import com.example.ToDoList.payload.Response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-
-import static org.assertj.core.api.Assertions.*;
-
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -38,6 +29,7 @@ public class UserService {
     public ColorRepository colorRepository;
     @Autowired
     public CommentRepository commentRepository;
+    @Autowired AccessedUsersRepository accessedUsersRepository;
 
     @Autowired
     PasswordEncoder encoder;
@@ -66,7 +58,7 @@ public class UserService {
         Lists lists = listsRepository.findById(id).get();
         tasks.setLists(lists);
         tasks.setTaskName(taskRequest.getTaskName());
-        tasks.setEnd(taskRequest.getEndTime());
+        tasks.setEndTime(taskRequest.getEndTime());
         tasks.setDescription(taskRequest.getDescription());
         tasksRepository.save(tasks);
     }
@@ -99,6 +91,9 @@ public class UserService {
         lists.setColors(colors);
         User user = userRepository.findById(id).get();
         lists.setUsers(Collections.singleton(user));
+        AccessedUsers accessedUsers = new AccessedUsers();
+        accessedUsers.setId(user.getId());
+        accessedUsers.setEmail(user.getEmail());
         lists = listsRepository.save(lists);
     }
 
@@ -122,6 +117,7 @@ public class UserService {
     //удаление листа
     public void deleteList(Long id)
     {
+
         listsRepository.deleteById(id);
     }
 
@@ -132,6 +128,10 @@ public class UserService {
                 -> new ResourceNotFoundException("Пользователя с таким email: "+putUser.getEmail() + " не существует" ));
         Lists lists = listsRepository.findById(id).get();
         lists.getUsers().add(user);
+        AccessedUsers accessedUsers = new AccessedUsers();
+        accessedUsers.setEmail(putUser.getEmail());
+        accessedUsers.setId(user.getId());
+        accessedUsersRepository.save(accessedUsers);
         listsRepository.save(lists);
     }
 
@@ -141,7 +141,7 @@ public class UserService {
        Comment comment = new Comment();
        User user = userRepository.findById(userId).get();
         comment.setUser(user);
-        comment.setTimestamp(LocalDateTime.now());
+        comment.setTimestamp(commentRequest.getTimestamp());
         comment.setContent(commentRequest.getContent());
         Tasks tasks = tasksRepository.findById(id).get();
         comment.setTasks(tasks);

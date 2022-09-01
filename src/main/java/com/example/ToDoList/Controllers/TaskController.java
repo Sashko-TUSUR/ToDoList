@@ -57,7 +57,7 @@ public ResponseEntity<?> TaskAdd(@Valid @RequestBody TaskRequest taskRequest, @P
     //оставить коммент
     @PostMapping("/comment/{id}")
     public ResponseEntity<?> addComment(@PathVariable(value = "id") Long id , @Valid @RequestBody CommentRequest commentRequest,
-                                        @AuthenticationPrincipal UserDetailsImpl userDetails)
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails )
     {
         userService.addComment(userDetails.getId(),commentRequest,id);
         return ResponseEntity.ok(new ApiResponse(true, "Комментарий добавлен "));
@@ -67,11 +67,13 @@ public ResponseEntity<?> TaskAdd(@Valid @RequestBody TaskRequest taskRequest, @P
 
     //вывод всех задач пользователя
     @GetMapping
-    @JsonIgnoreProperties({ "" })
+   // @JsonIgnoreProperties({ "" })
     public List<Tasks> taskUser(@AuthenticationPrincipal UserDetailsImpl userDetails)
     {
-
+        if(tasksRepository.findByAllTask(userDetails.getId()) != null)
       return tasksRepository.findByAllTask(userDetails.getId());
+        else
+            return null;
     }
 
 
