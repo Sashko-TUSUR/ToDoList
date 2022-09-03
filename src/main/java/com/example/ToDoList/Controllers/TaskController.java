@@ -8,10 +8,8 @@ import com.example.ToDoList.payload.Request.TaskRequest;
 import com.example.ToDoList.payload.Response.ApiResponse;
 import com.example.ToDoList.service.UserDetailsImpl;
 import com.example.ToDoList.service.UserService;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.config.Task;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,7 +65,6 @@ public ResponseEntity<?> TaskAdd(@Valid @RequestBody TaskRequest taskRequest, @P
 
     //вывод всех задач пользователя
     @GetMapping
-   // @JsonIgnoreProperties({ "" })
     public List<Tasks> taskUser(@AuthenticationPrincipal UserDetailsImpl userDetails)
     {
         if(tasksRepository.findByAllTask(userDetails.getId()) != null)

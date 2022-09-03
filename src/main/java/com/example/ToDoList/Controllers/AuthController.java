@@ -7,7 +7,6 @@ import com.example.ToDoList.Repository.UserRepository;
 import com.example.ToDoList.Security.JwtUtils;
 import com.example.ToDoList.payload.Request.LoginRequest;
 import com.example.ToDoList.payload.Request.SignUpRequest;
-import com.example.ToDoList.payload.Request.TokenRefreshRequest;
 import com.example.ToDoList.payload.Response.ApiResponse;
 import com.example.ToDoList.payload.Response.JwtResponse;
 import com.example.ToDoList.payload.Response.TokenRefreshResponse;
@@ -22,15 +21,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController

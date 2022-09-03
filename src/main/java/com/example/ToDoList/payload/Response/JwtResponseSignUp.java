@@ -1,6 +1,5 @@
 package com.example.ToDoList.payload.Response;
 
-import com.example.ToDoList.Model.User;
 import lombok.Data;
 
 @Data

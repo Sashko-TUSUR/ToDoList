@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
@@ -26,7 +25,6 @@ public class Comment {
     private String content;
 
     @Column(updatable = false)
-    //@JsonFormat(shape = JsonFormat.Shape.STRING,pattern ="yyyy-MM-dd HH-mm:ss")
     private Long timestamp;
 
     @JsonIgnoreProperties("id")

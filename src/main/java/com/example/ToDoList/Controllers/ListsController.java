@@ -9,15 +9,11 @@ import com.example.ToDoList.payload.Response.ApiResponse;
 import com.example.ToDoList.service.UserDetailsImpl;
 import com.example.ToDoList.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.QueryAnnotation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -55,7 +51,7 @@ public class ListsController {
         userService.editList(listRequest,id);
         return ResponseEntity.ok(new ApiResponse(true, "Лист обновлён"));
     }
-    // удаление листа посмотреть как удалять все записи этого листа
+    // удаление листа
     @DeleteMapping("/del/{id}")
     public ResponseEntity<?> delList(@PathVariable(value = "id") Long id)
     {
