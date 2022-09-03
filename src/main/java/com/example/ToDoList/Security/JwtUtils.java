@@ -139,10 +139,10 @@ public class JwtUtils {
         return false;
     }
 
-    /////////////////////ССАНЫЕ КУКИ ///////////////////// ///////////////////// ///////////////////// ///////////////////// /////////////////////
+    ///////////////////// КУКИ ///////////////////// ///////////////////// ///////////////////// ///////////////////// /////////////////////
 
     public ResponseCookie generateJwtCookie(RefreshToken refreshToken) {
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, refreshToken.getToken()).path("/api").maxAge(1314000).sameSite("None").secure(true).httpOnly(true).build();
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, refreshToken.getToken()).path("/api").maxAge(24*60*60*15).sameSite("None").secure(true).httpOnly(true).build();
         return cookie;
     }
 
