@@ -17,6 +17,7 @@ import org.springframework.web.util.WebUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
@@ -141,7 +142,7 @@ public class JwtUtils {
     /////////////////////ССАНЫЕ КУКИ ///////////////////// ///////////////////// ///////////////////// ///////////////////// /////////////////////
 
     public ResponseCookie generateJwtCookie(RefreshToken refreshToken) {
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, refreshToken.getToken()).path("/api").maxAge(24 * 60 * 60).sameSite("None").secure(true).httpOnly(true).build();
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, refreshToken.getToken()).path("/api").maxAge(1314000).sameSite("None").secure(true).httpOnly(true).build();
         return cookie;
     }
 
