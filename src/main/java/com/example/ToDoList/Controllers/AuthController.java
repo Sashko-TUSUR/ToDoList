@@ -2,10 +2,12 @@ package com.example.ToDoList.Controllers;
 
 import com.example.ToDoList.Exception.TokenRefreshException;
 import com.example.ToDoList.Model.RefreshToken;
+import com.example.ToDoList.Model.User;
 import com.example.ToDoList.Repository.RoleRepository;
 import com.example.ToDoList.Repository.UserRepository;
 import com.example.ToDoList.Security.JwtUtils;
 import com.example.ToDoList.payload.Request.LoginRequest;
+import com.example.ToDoList.payload.Request.RequestAccessToken;
 import com.example.ToDoList.payload.Request.SignUpRequest;
 import com.example.ToDoList.payload.Response.ApiResponse;
 import com.example.ToDoList.payload.Response.JwtResponse;
@@ -21,10 +23,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
@@ -76,21 +75,26 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(HttpServletRequest request)
+    public ResponseEntity<?> refreshToken(HttpServletRequest request, @RequestBody RequestAccessToken accessToken)
     {
         Cookie cookie = WebUtils.getCookie(request, "refresh");
         String requestRefreshToken = cookie.getValue();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        return jwtUtils.findByToken(requestRefreshToken)
-                .map(jwtUtils::verifyExpiration)
-                .map(RefreshToken::getUser)
-                .map(user -> {
-                    String token = jwtUtils.generateJwtTokenFromEmail(userDetails.getEmail());
-                    return ResponseEntity.ok(new TokenRefreshResponse(token,userRepository.findById(userDetails.getId())));
-                })
-                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
-                        "Refresh token is not in database!"));
+       // if(!jwtUtils.validateJwtToken(accessToken.getAccessToken()) & jwtUtils.validateJwtCookieToken(requestRefreshToken)) {
+
+            String Token = jwtUtils.getEmailFromRefreshToken(requestRefreshToken);
+            System.out.print(Token);
+            return jwtUtils.findByToken(requestRefreshToken)
+                    .map(jwtUtils::verifyExpiration)
+                    .map(RefreshToken::getUser)
+                    .map(user -> {
+                        String token = jwtUtils.generateJwtTokenFromEmail(Token);
+                        User user1 = userRepository.findByEmail(Token).get();
+                        return ResponseEntity.ok(new TokenRefreshResponse(token, userRepository.findById(user1.getId())));
+                    })
+                    .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+                            "Refresh token is not in database!"));
+       // }
+       // return ResponseEntity.ok(new ApiResponse(false,"Авторизирейтесь занова!"));
     }
 
 

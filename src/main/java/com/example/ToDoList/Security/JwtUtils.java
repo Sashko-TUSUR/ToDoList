@@ -33,7 +33,7 @@ public class JwtUtils {
     @Value("${todolist.app.jwtCookieName}")
     private String jwtCookie;
     @Value("${todolist.app.jwtRefreshExpirationMs}")
-    private String jwtRefreshExpirationMs;
+    private Long jwtRefreshExpirationMs;
     @Value("${todolist.app.jwtRefreshSecret}")
     private String jwtSecretRefresh;
 
@@ -56,7 +56,7 @@ public class JwtUtils {
                 .setSubject((email))
                 .setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS512, jwtSecretRefresh)
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .setExpiration(new Date((new Date()).getTime() + jwtRefreshExpirationMs))
                 .compact();
 
     }
@@ -64,7 +64,7 @@ public class JwtUtils {
     {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setToken(createRefreshToken(email));
-        refreshToken.setExpiryDate(Instant.now().plusMillis(jwtExpirationMs));
+        refreshToken.setExpiryDate(Instant.now().plusMillis(jwtRefreshExpirationMs));
         refreshToken.setUser(userRepository.findByEmail(email).get());
         refreshToken=refreshTokenRepository.save(refreshToken);
         return  refreshToken;
@@ -142,7 +142,7 @@ public class JwtUtils {
     ///////////////////// КУКИ ///////////////////// ///////////////////// ///////////////////// ///////////////////// /////////////////////
 
     public ResponseCookie generateJwtCookie(RefreshToken refreshToken) {
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, refreshToken.getToken()).path("/api").maxAge(24*60*60*15).sameSite("None").secure(true).httpOnly(true).build();
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, refreshToken.getToken()).path("api/").maxAge(24*60*60*15).sameSite("None").secure(true).httpOnly(true).build();
         return cookie;
     }
 
