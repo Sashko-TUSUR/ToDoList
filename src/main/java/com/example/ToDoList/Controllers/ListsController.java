@@ -15,6 +15,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -32,6 +35,7 @@ public class ListsController {
     @GetMapping()
     public List<Lists> listUser(@AuthenticationPrincipal UserDetailsImpl userDetails)
     {
+        System.out.println(userDetails.getEmail());
         if (listsRepository.findByAllLists(userDetails.getId()) !=null) {
             return listsRepository.findByAllLists(userDetails.getId());
         }
@@ -60,9 +64,9 @@ public class ListsController {
     }
     //поделиться списком
     @PutMapping("share/{id}")
-    public ResponseEntity<?> shareList(@PathVariable(value = "id") Long id , @RequestBody PutUserRequest putUser)
+    public ResponseEntity<?> shareList(@PathVariable(value = "id") Long id , @RequestBody PutUserRequest putUser, @AuthenticationPrincipal UserDetailsImpl userDetails)
     {
-        userService.putList(putUser,id);
+        userService.putList(putUser,id, userDetails);
         return ResponseEntity.ok(new ApiResponse(true, "Пользователь добавлен"));
     }
 

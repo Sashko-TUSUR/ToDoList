@@ -8,10 +8,9 @@ import com.example.ToDoList.Security.JwtUtils;
 import com.example.ToDoList.payload.Request.LoginRequest;
 import com.example.ToDoList.payload.Request.SignUpRequest;
 import com.example.ToDoList.payload.Request.TokenRefreshRequest;
+import com.example.ToDoList.payload.Response.ApiResponse;
 import com.example.ToDoList.payload.Response.JwtResponse;
-import com.example.ToDoList.payload.Response.JwtResponseSignUp;
 import com.example.ToDoList.payload.Response.TokenRefreshResponse;
-import com.example.ToDoList.service.RefreshTokenService;
 import com.example.ToDoList.service.UserDetailsImpl;
 import com.example.ToDoList.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +22,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -52,8 +52,6 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    RefreshTokenService refreshTokenService;
 
     @Autowired
     JwtUtils jwtUtils;
@@ -71,17 +69,17 @@ public class AuthController {
                 .collect(Collectors.toList());
         RefreshToken refreshToken = jwtUtils.saveRefreshToken(userDetails.getEmail());
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(refreshToken);
-        return ResponseEntity.ok()
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, String.valueOf(jwtCookie))
                 .body(new JwtResponse(jwt,refreshToken.getToken(),
                         userRepository.findById(userDetails.getId())));
-
-
 
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
-        String requestRefreshToken = request.getRefreshToken();
+    public ResponseEntity<?> refreshToken(HttpServletRequest request)
+    {
+        Cookie cookie = WebUtils.getCookie(request, "refresh");
+        String requestRefreshToken = cookie.getValue();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         return jwtUtils.findByToken(requestRefreshToken)
@@ -89,7 +87,7 @@ public class AuthController {
                 .map(RefreshToken::getUser)
                 .map(user -> {
                     String token = jwtUtils.generateJwtTokenFromEmail(userDetails.getEmail());
-                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+                    return ResponseEntity.ok(new TokenRefreshResponse(token,userRepository.findById(userDetails.getId())));
                 })
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
                         "Refresh token is not in database!"));
@@ -101,16 +99,9 @@ public class AuthController {
 
 
         userService.createUser(signUpRequest);
-     //   RefreshToken refreshToken = jwtUtils.saveRefreshToken(signUpRequest.getEmail());
-    //    ResponseCookie jwtCookie = jwtUtils.generateJwtCookieSignUp(refreshToken);
-
-        String jwt = jwtUtils.generateJwtTokenSignUp(signUpRequest.getEmail());
         System.out.print("пользователь создан");
 
-        return ResponseEntity.ok().body(new JwtResponseSignUp(jwt));
-        //           .body(new JwtResponseSignUp(jwt));
-        //return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, String.valueOf(jwtCookie))
-             //           .body(new JwtResponseSignUp(jwt));
+        return ResponseEntity.ok().body(new ApiResponse(true,"Вы успешно зарегистрированы, далее, произведите авторизацию"));
     }
 
 

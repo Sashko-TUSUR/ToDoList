@@ -1,6 +1,5 @@
 package com.example.ToDoList.Security;
 
-import com.example.ToDoList.service.RefreshTokenService;
 import com.example.ToDoList.service.UserDetailsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +23,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private JwtUtils jwtUtils;
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
-    @Autowired
-    private RefreshTokenService refreshTokenService;
+
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override
@@ -44,27 +42,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             logger.error("Cannot set user authentication: {}", e);
         }
-        /*
-        try {
-            String jwt = parseJwtCookie(request);
-            if (jwt != null && jwtUtils.validateJwtCookieToken(jwt)) {
-                String username = jwtUtils.getEmailFromRefreshToken(jwt);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails,
-                                null,
-                                userDetails.getAuthorities());
-
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        } catch (Exception e) {
-            logger.error("Cannot set user authenticationRefresh: {}", e);
-        }
-
-         */
-
 
         filterChain.doFilter(request, response);
 

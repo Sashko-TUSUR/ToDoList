@@ -1,15 +1,22 @@
 package com.example.ToDoList.payload.Response;
 
 
+import com.example.ToDoList.Model.User;
 import lombok.Data;
+
+
+import java.util.Optional;
 
 @Data
 public class TokenRefreshResponse {
 
     private String accessToken;
-    private String refreshToken;
-    public TokenRefreshResponse(String accessToken, String refreshToken) {
+    private Optional<User> user;
+
+    public TokenRefreshResponse(String accessToken, Optional<User> user) {
         this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
+        this.user = user;
     }
+
+
 }

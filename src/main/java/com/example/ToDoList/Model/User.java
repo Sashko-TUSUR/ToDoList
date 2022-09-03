@@ -37,11 +37,14 @@ private String password;
 inverseJoinColumns = @JoinColumn(name = "role_id",referencedColumnName = "id"))
 private Set<Role> roles;
 
+
 @JsonIgnore
 @ManyToMany(mappedBy = "users")
 private List<Lists> lists;
 
-
+@JsonIgnore
+@ManyToMany(mappedBy = "accessedUsers")
+private List<Lists> listsUsers;
 
 
     public User(String email, String password) {

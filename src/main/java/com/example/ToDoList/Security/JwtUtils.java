@@ -138,24 +138,14 @@ public class JwtUtils {
         return false;
     }
 
-    public String generateJwtTokenSignUp(String email) {
-        return generateJwtTokenFromEmail(email);
-    }
-
-
     /////////////////////ССАНЫЕ КУКИ ///////////////////// ///////////////////// ///////////////////// ///////////////////// /////////////////////
 
     public ResponseCookie generateJwtCookie(RefreshToken refreshToken) {
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, refreshToken.getToken()).path("/api/auth/signin").maxAge(24 * 60 * 60).httpOnly(true)
-                .sameSite("None").secure(true).build();
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, refreshToken.getToken()).path("/api").maxAge(24 * 60 * 60).sameSite("None").secure(true).httpOnly(true).build();
         return cookie;
     }
 
-    public ResponseCookie generateJwtCookieSignUp(RefreshToken refreshToken) {
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, refreshToken.getToken()).path("/api/auth/signup").maxAge(24 * 60 * 60).httpOnly(true)
-                .sameSite("None").secure(true).build();
-        return cookie;
-    }
+
     public String getJwtFromCookies(HttpServletRequest request) {
 
         Cookie cookie = WebUtils.getCookie(request, jwtCookie);
