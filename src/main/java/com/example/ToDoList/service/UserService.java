@@ -109,7 +109,6 @@ public class UserService {
         listsRepository.save(lists);
     }
 
-
     //редактирование листа
     public void editList(ListRequest listRequest,Long id)
     {

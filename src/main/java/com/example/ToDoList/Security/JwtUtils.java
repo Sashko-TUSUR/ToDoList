@@ -46,6 +46,7 @@ public class JwtUtils {
     private UserRepository userRepository;
 
 
+
     //////РЕФРЕШ ТОКЕН ///////////////////// ///////////////////// ///////////////////// ///////////////////// /////////////////////
 
 
@@ -60,15 +61,28 @@ public class JwtUtils {
                 .compact();
 
     }
-    public RefreshToken saveRefreshToken(String email)
+    public RefreshToken saveRefreshToken(String email, Long id)
     {
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setToken(createRefreshToken(email));
-        refreshToken.setExpiryDate(Instant.now().plusMillis(jwtRefreshExpirationMs));
-        refreshToken.setUser(userRepository.findByEmail(email).get());
-        refreshToken=refreshTokenRepository.save(refreshToken);
-        return  refreshToken;
-    }
+        if(refreshTokenRepository.findUser(id)==null)
+        {
+            RefreshToken refreshToken = new RefreshToken();
+            refreshToken.setToken(createRefreshToken(email));
+            refreshToken.setExpiryDate(Instant.now().plusMillis(jwtRefreshExpirationMs));
+            refreshToken.setUser(userRepository.findByEmail(email).get());
+            refreshTokenRepository.save(refreshToken);
+            return refreshToken;
+        }
+        else {
+            RefreshToken refreshToken1 = refreshTokenRepository.findToken(id);
+                refreshToken1.setToken(createRefreshToken(email));
+                refreshToken1.setExpiryDate(Instant.now().plusMillis(jwtRefreshExpirationMs));
+                refreshToken1.setUser(userRepository.findByEmail(email).get());
+                refreshTokenRepository.save(refreshToken1);
+                return refreshToken1;
+            }
+        }
+
+
     public Optional<RefreshToken> findByToken(String token) {
 
         return refreshTokenRepository.findByToken(token);
@@ -80,6 +94,7 @@ public class JwtUtils {
         }
         return token;
     }
+
     @Transactional
     public int deleteByUserId(Long userId) {
         return refreshTokenRepository.deleteByUser(userRepository.findById(userId).get());
@@ -89,21 +104,6 @@ public class JwtUtils {
         return Jwts.parser().setSigningKey(jwtSecretRefresh).parseClaimsJws(token).getBody().getSubject();
     }
 
-    public boolean validateJwtCookieToken(String authToken) {
-        try {
-            Jwts.parser().setSigningKey(jwtSecretRefresh).parseClaimsJws(authToken);
-            return true;
-        } catch (MalformedJwtException e) {
-            logger.error("Invalid JWT token: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
-            logger.error("JWT token is expired: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            logger.error("JWT token is unsupported: {}", e.getMessage());
-        } catch (IllegalArgumentException e) {
-            logger.error("JWT claims string is empty: {}", e.getMessage());
-        }
-        return false;
-    }
 
     /////////////////////АКСЕСС ТОКЕН ///////////////////// ///////////////////// ///////////////////// ///////////////////// /////////////////////
     public String generateJwtToken(UserDetailsImpl userPrincipal) {

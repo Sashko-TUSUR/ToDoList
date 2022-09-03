@@ -66,7 +66,7 @@ public class AuthController {
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
-        RefreshToken refreshToken = jwtUtils.saveRefreshToken(userDetails.getEmail());
+        RefreshToken refreshToken = jwtUtils.saveRefreshToken(userDetails.getEmail(),userDetails.getId());
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(refreshToken);
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, String.valueOf(jwtCookie))
                 .body(new JwtResponse(jwt,refreshToken.getToken(),
@@ -75,12 +75,10 @@ public class AuthController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(HttpServletRequest request, @RequestBody RequestAccessToken accessToken)
+    public ResponseEntity<?> refreshToken(HttpServletRequest request)
     {
         Cookie cookie = WebUtils.getCookie(request, "refresh");
         String requestRefreshToken = cookie.getValue();
-       // if(!jwtUtils.validateJwtToken(accessToken.getAccessToken()) & jwtUtils.validateJwtCookieToken(requestRefreshToken)) {
-
             String Token = jwtUtils.getEmailFromRefreshToken(requestRefreshToken);
             System.out.print(Token);
             return jwtUtils.findByToken(requestRefreshToken)
@@ -93,8 +91,6 @@ public class AuthController {
                     })
                     .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
                             "Refresh token is not in database!"));
-       // }
-       // return ResponseEntity.ok(new ApiResponse(false,"Авторизирейтесь занова!"));
     }
 
 
@@ -109,16 +105,12 @@ public class AuthController {
     }
 
 
-    /*
-    @PostMapping("/signout")
+
+    @PostMapping("/logout")
     public ResponseEntity<?> logoutUser() {
-        ResponseCookie cookie = refreshTokenService.getCleanJwtCookie();
+        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
     }
-
-     */
-
-
 
 
 
