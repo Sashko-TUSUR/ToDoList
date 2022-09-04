@@ -18,7 +18,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("api/lists")
+@RequestMapping("api/lists/")
 public class ListsController {
 
     @Autowired
