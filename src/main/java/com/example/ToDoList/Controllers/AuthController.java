@@ -55,7 +55,7 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-    @PostMapping("/signin")
+    @PostMapping("signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -74,7 +74,7 @@ public class AuthController {
 
     }
 
-    @PostMapping("/refresh")
+    @PostMapping("refresh")
     public ResponseEntity<?> refreshToken(HttpServletRequest request)
     {
         Cookie cookie = WebUtils.getCookie(request, "refresh");
@@ -94,7 +94,7 @@ public class AuthController {
     }
 
 
-    @PostMapping("/signup")
+    @PostMapping("signup")
     public ResponseEntity createUser(@RequestBody SignUpRequest signUpRequest) {
 
 
@@ -106,7 +106,7 @@ public class AuthController {
 
 
 
-    @PostMapping("/logout")
+    @PostMapping("logout")
     public ResponseEntity<?> logoutUser() {
         ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
