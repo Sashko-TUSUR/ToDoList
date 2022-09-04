@@ -69,7 +69,7 @@ public class AuthController {
         RefreshToken refreshToken = jwtUtils.saveRefreshToken(userDetails.getEmail(),userDetails.getId());
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(refreshToken);
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, String.valueOf(jwtCookie))
-                .body(new JwtResponse(jwt,refreshToken.getToken(),
+                .body(new JwtResponse(jwt,
                         userRepository.findById(userDetails.getId())));
 
     }

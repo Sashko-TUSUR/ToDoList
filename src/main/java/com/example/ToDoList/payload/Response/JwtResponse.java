@@ -11,9 +11,8 @@ public class  JwtResponse {
     private String refreshToken;
     private Optional<User> user;
 
-    public JwtResponse(String accessToken,String refreshToken , Optional<User> user) {
+    public JwtResponse(String accessToken, Optional<User> user) {
         this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
         this.user = user;
     }
 
